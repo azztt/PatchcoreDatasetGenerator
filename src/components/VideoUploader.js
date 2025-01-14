@@ -38,8 +38,6 @@ const VideoUploader = () => {
   };
 
   const handleFileChange = (e) => {
-    // debugger
-    // const file = e.target.files[0];
     console.log('files', e.target.files)
     const files = Array.from(e.target.files)
     files.forEach(file => {
@@ -77,9 +75,6 @@ const VideoUploader = () => {
     setExpName(e.target.value);
   };
 
-  // const handleNthFrameChange = (e) => {
-  //   setNthFrame(e.target.value);
-  // };
 
   const handleImageClick = (index, point, gt = false) => {
     // debugger
@@ -135,13 +130,6 @@ const VideoUploader = () => {
         return newFrames;
       });
 
-      // // remove the ground truth points
-      // setPoints(prev => {
-      //   const newPoints = [...prev];
-      //   newPoints[index] = [newPoints[index]?.[0] || []];
-      //   return newPoints;
-      // });
-
       // remove the ground truth prompt types
       setPromptTypes(prev => {
         const newPromptTypes = [...prev];
@@ -195,11 +183,6 @@ const VideoUploader = () => {
     });
   };
 
-  const handleDefectTypeChange = (defectString) => {
-    setDefectTypes(defectString.split(',').map(val => val.trim()).filter(val => val));
-    setDescs([])
-  }
-
   const handleNthFrameChange = (index, newNthFrame) => {
     setNthFrames(prev => {
       const newNthFrames = [...prev];
@@ -209,18 +192,11 @@ const VideoUploader = () => {
   };
 
   const handleSubmit = async () => {
-    const PORT=5003;
+    const PORT=5000;
     // debugger
     const formData = new FormData();
 
     try {
-      // let videosTaken = []
-      // videos.forEach((file) => {
-      //   if (!videosTaken.includes(file.name)) {
-      //     formData.append('videos', file);
-      //     videosTaken.push(file.name);
-      //   }
-      // });
       let videoPrompts = videos.map((file, index) => ([
         points[index][0]?.map(
           point => ({x: point.x, y: point.y, type: point.type})
@@ -258,11 +234,9 @@ const VideoUploader = () => {
       formData.append('labels', JSON.stringify(labels));
       formData.append('types', JSON.stringify(types));
       formData.append('isDefect', JSON.stringify(updatedIsDefectList));
-      // formData.append('descs', JSON.stringify(descs));
       formData.append('expName', expName);
       formData.append('singleVideo', singleVideo);
       formData.append('nthFrames', JSON.stringify(nthFrames));
-      // debugger
       response = await axios.post(`http://localhost:${PORT}/process`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -275,9 +249,6 @@ const VideoUploader = () => {
         console.log(response.data);
         alert('Videos and prompts failed to send to backend!');
       }
-      // else 
-      // console.log(response?.data);
-      // alert('Videos and prompts sent to backend successfully!');
     } catch (err) {
       console.error(err.message);
     }
@@ -329,10 +300,6 @@ const VideoUploader = () => {
     });
   }
 
-  // useEffect(() => {
-  //   setDescs(prev => prev.map(val => val || ''));
-  // }, [descs]);
-
   useEffect(() => {
     setNthFrames(prev => {
       labels.forEach((_, index) => {
@@ -353,13 +320,6 @@ const VideoUploader = () => {
         placeholder="Enter experiment name"
         required
       />
-      {/* <input
-        type="number"
-        value={nthFrame}
-        onChange={handleNthFrameChange}
-        placeholder="Enter nth frame to extract (empty fill extract every 3rd frame by default)"
-        required
-      /> */}
 
       <input
         accept="video/*"
