@@ -1,0 +1,10 @@
+/* src/components/VideoFrame.css */
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    /* Ensure no extra margins or paddings affect the image */
+    margin: 0;
+    padding: 0;
+}
+  
